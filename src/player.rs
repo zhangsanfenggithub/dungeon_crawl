@@ -28,7 +28,7 @@ impl Player {
                 _ => { Point::zero() }
             };
             let new_position = self.position + delta;
-            if map.can_enter_tile(&new_position){
+            if map.can_enter_tile(new_position){
                 self.position = new_position
             }
         }
