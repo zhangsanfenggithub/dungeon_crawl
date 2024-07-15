@@ -20,6 +20,8 @@ impl MapBuilder {
 
         map_builder.fill(TileType::Wall);
         map_builder.build_random_rooms(rng);
+        map_builder.build_corridors(rng);
+        map_builder.player_start_point = map_builder.rooms[0].center();
         map_builder
     }
 
@@ -71,6 +73,20 @@ impl MapBuilder {
             if let Some(index) = self.map.try_index(Point::new(x, y)) {
                 self.map.tiles[index] = TileType::Floor
             }
+        }
+    }
+
+    pub fn build_corridors(&mut self, rng: &mut RandomNumberGenerator) {
+        let mut rooms = self.rooms.clone();
+        rooms.sort_by(|a, b| {
+
+            a.center().x.cmp(&b.center().x)
+        });
+        for (i, room) in rooms.iter().enumerate().skip(1) {
+            let prev = rooms[i-1].center();
+            let curr = rooms[i].center();
+            self.apply_horizontal_tunnel(prev.x, curr.x, prev.y);
+            self.apply_vertical_tunnel(prev.y, curr.y, curr.x);
         }
     }
 }
