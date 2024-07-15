@@ -24,25 +24,25 @@ impl Map {
         }
     }
 
-    pub fn render(&self, ctx: &mut BTerm, camera:& Camera) {
-        ctx.set_active_console(0);
-        for y in camera.top_y..camera.bottom_y {
-            for x in camera.left_x..camera.right_x {
-                if !self.in_bound(Point::new(x, y)) {
-                    continue
-                }
-                let index = map_index(x, y);
-                match self.tiles[index] {
-                    TileType::Wall => {
-                        ctx.set(x - camera.left_x, y - camera.top_y, WHITE, BLACK, to_cp437('.'))
-                    }
-                    TileType::Floor => {
-                        ctx.set(x - camera.left_x, y - camera.top_y, WHITE, BLACK, to_cp437('#'))
-                    }
-                }
-            }
-        }
-    }
+    // pub fn render(&self, ctx: &mut BTerm, camera:& Camera) {
+    //     ctx.set_active_console(0);
+    //     for y in camera.top_y..camera.bottom_y {
+    //         for x in camera.left_x..camera.right_x {
+    //             if !self.in_bound(Point::new(x, y)) {
+    //                 continue
+    //             }
+    //             let index = map_index(x, y);
+    //             match self.tiles[index] {
+    //                 TileType::Wall => {
+    //                     ctx.set(x - camera.left_x, y - camera.top_y, WHITE, BLACK, to_cp437('.'))
+    //                 }
+    //                 TileType::Floor => {
+    //                     ctx.set(x - camera.left_x, y - camera.top_y, WHITE, BLACK, to_cp437('#'))
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
 
     pub fn in_bound(&self, point: Point) -> bool {

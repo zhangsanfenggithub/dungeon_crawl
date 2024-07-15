@@ -1,16 +1,24 @@
 mod map;
-mod player;
+// mod player;
 mod map_builder;
 mod camera;
+mod systems;
+mod components;
+mod spawner;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
+    pub use legion::*;
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
     pub use crate::map::*;
-    pub use crate::player::*;
+    // pub use crate::player::*;
     pub use crate::map_builder::*;
     pub use crate::camera::*;
+    pub use crate::systems::*;
+    pub use crate::components::*;
+    pub use crate::spawner::*;
+
     pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
 }
@@ -18,19 +26,23 @@ mod prelude {
 use prelude::*;
 
 struct State {
-    map: Map,
-    player: Player,
-    camera: Camera,
+    ecs: World,
+    resources : Resources,
+    systems: Schedule
 }
 
 impl State {
     fn new() -> Self {
+        let mut ecs = World::default();
+        let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut rng); //组合模式，组合完成后把所有权转移给构造的State
+        resources.insert(map_builder.map);
+        resources.insert(Camera::new(map_builder.player_start_point));
         Self {
-            map: map_builder.map,
-            player: Player::new(map_builder.player_start_point),
-            camera: Camera::new(map_builder.player_start_point),
+            ecs,
+            resources,
+            systems:
         }
     }
 }
@@ -41,9 +53,10 @@ impl GameState for State {
         ctx.cls();
         ctx.set_active_console(1);
         ctx.cls();
-        self.player.update(ctx, &self.map, &mut self.camera);
-        self.map.render(ctx, &self.camera);
-        self.player.render(ctx, &self.camera);
+
+        // self.player.update(ctx, &self.map, &mut self.camera);
+        // self.map.render(ctx, &self.camera);
+        // self.player.render(ctx, &self.camera);
     }
 }
 
