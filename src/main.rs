@@ -35,14 +35,21 @@ struct State {
     systems: Schedule,
 }
 
+//State 整个世界相关状态的地方
 impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut rng); //组合模式，组合完成后把所有权转移给构造的State
+        spawn_player(&mut ecs, map_builder.player_start_point);
+        map_builder.rooms.iter()
+            .skip(1)
+            .map(|rect|  rect.center() )
+            .for_each(|point| spawn_enemy(&mut ecs, &mut rng, point));
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start_point));
+
         Self {
             ecs,
             resources,
@@ -60,6 +67,7 @@ impl GameState for State {
         ctx.cls();
         self.resources.insert(ctx.key);
         self.systems.execute(&mut self.ecs, &mut self.resources);
+        render_draw_buffer(ctx).expect("Render Error")
     }
 }
 

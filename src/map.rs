@@ -16,7 +16,6 @@ pub fn map_index(x: i32, y: i32) -> usize {
     ((y * SCREEN_WIDTH) + x) as usize
 }
 
-
 impl Map {
     pub fn new() -> Self {
         Self {
