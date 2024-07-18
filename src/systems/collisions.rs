@@ -8,7 +8,7 @@ use crate::prelude::*;
 pub fn collisions(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
     let mut player_pos = Point::zero();
 
-    let mut players = <(&Point)>::query().filter(component::<Player>());
+    let mut players = <&Point>::query().filter(component::<Player>());
     players
         .iter(ecs)
         .for_each(|point| player_pos = *point);

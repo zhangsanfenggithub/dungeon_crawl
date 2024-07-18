@@ -5,6 +5,7 @@ mod camera;
 mod systems;
 mod components;
 mod spawner;
+mod turn_state;
 
 mod prelude {
     //lib
@@ -27,12 +28,16 @@ mod prelude {
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
 }
 
+use log::error;
 use prelude::*;
+use crate::turn_state::TurnState;
 
 struct State {
     ecs: World,
     resources: Resources,
-    systems: Schedule,
+    input_scheduler: Schedule,
+    player_scheduler: Schedule,
+    enemy_scheduler: Schedule,
 }
 
 //State 整个世界相关状态的地方
@@ -45,15 +50,17 @@ impl State {
         spawn_player(&mut ecs, map_builder.player_start_point);
         map_builder.rooms.iter()
             .skip(1)
-            .map(|rect|  rect.center() )
+            .map(|rect| rect.center())
             .for_each(|point| spawn_enemy(&mut ecs, &mut rng, point));
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start_point));
-
+        resources.insert(TurnState::AwaitingInput);
         Self {
             ecs,
             resources,
-            systems: build_scheduler(),
+            input_scheduler: build_input_schedule(),
+            player_scheduler: build_player_schedule(),
+            enemy_scheduler: build_enemy_schedule(),
         }
     }
 }
@@ -66,7 +73,14 @@ impl GameState for State {
         ctx.set_active_console(1);
         ctx.cls();
         self.resources.insert(ctx.key);
-        self.systems.execute(&mut self.ecs, &mut self.resources);
+        let curr_state = self.resources.get::<TurnState>().unwrap().clone();
+        match curr_state {
+            TurnState::AwaitingInput => self.input_scheduler.execute(&mut self.ecs, &mut self.resources),
+            TurnState::PlayerTurn => self.player_scheduler.execute(&mut self.ecs, &mut self.resources),
+            TurnState::EnemyTurn => self.enemy_scheduler.execute(&mut self.ecs, &mut self.resources),
+        }
+        // self.input_systems.execute(&mut self.ecs, &mut self.resources);
+        println!("current state is : {:?}", curr_state);
         render_draw_buffer(ctx).expect("Render Error")
     }
 }
