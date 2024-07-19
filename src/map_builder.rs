@@ -20,7 +20,7 @@ impl MapBuilder {
 
         map_builder.fill(TileType::Wall);
         map_builder.build_random_rooms(rng);
-        map_builder.build_corridors(rng);
+        map_builder.build_corridors();
         map_builder.player_start_point = map_builder.rooms[0].center();
         map_builder
     }
@@ -76,7 +76,7 @@ impl MapBuilder {
         }
     }
 
-    pub fn build_corridors(&mut self, rng: &mut RandomNumberGenerator) {
+    pub fn build_corridors(&mut self) {
         let mut rooms = self.rooms.clone();
         rooms.sort_by(|a, b| {
 

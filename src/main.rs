@@ -80,7 +80,7 @@ impl GameState for State {
             TurnState::EnemyTurn => self.enemy_scheduler.execute(&mut self.ecs, &mut self.resources),
         }
         // self.input_systems.execute(&mut self.ecs, &mut self.resources);
-        println!("current state is : {:?}", curr_state);
+        // println!("current state is : {:?}", curr_state);
         render_draw_buffer(ctx).expect("Render Error")
     }
 }

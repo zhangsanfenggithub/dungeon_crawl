@@ -1,6 +1,5 @@
 use crate::prelude::*;
 
-
 #[system]
 #[read_component(Point)]
 #[read_component(Player)]
