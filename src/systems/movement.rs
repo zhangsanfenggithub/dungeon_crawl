@@ -1,10 +1,10 @@
 use crate::prelude::*;
 
 
-#[system(for_each)]
+#[system(for_each)] //Legion为止运行一条查询的系统提供的语法糖
 #[read_component(Player)]
 pub fn movement(
-    entity: &Entity,
+    entity: &Entity, //这两个组件就是我们要查询的组件,相当于省去手工迭代的
     want_move: &WantsToMove,
     #[resource] map: &Map,
     #[resource] camera: &mut Camera,
