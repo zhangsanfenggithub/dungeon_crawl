@@ -16,7 +16,7 @@ pub fn hud(ecs: &mut SubWorld) {
     draw_batch.print_centered(1, "Explore the dungeon. Cursor keys to move.");
 
     draw_batch.bar_horizontal(Point::zero(), SCREEN_WIDTH * 2, player_health.current, player_health.max, ColorPair::new(RED, RED));
-    draw_batch.print_color_centered(0, format!("Health : {} / {} ", player_health.current, player_health.max), ColorPair::new(WHITE, RED));
+    draw_batch.print_color_centered(0, format!("Health : {} / {} ", player_health.current, player_health.max), ColorPair::new(GREEN, RED));
 
     draw_batch.submit(10000).expect("Batch error");
 
